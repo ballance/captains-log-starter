@@ -1,6 +1,41 @@
 # Captain's Log
 
-A personal leadership journal system for engineering leaders to track daily progress, weekly summaries, and ongoing leadership topics through a structured markdown-based approach.
+A personal journal system designed for tracking daily progress, weekly reflections, and ongoing projects through structured markdown entries with an optional modern web interface.
+
+**Originally designed for engineering leaders**, but useful for anyone who wants to:
+- Track daily work and decisions (students, researchers, developers, managers)
+- Reflect on weekly progress and patterns
+- Document interactions with colleagues or team members
+- Maintain a searchable record of technical decisions
+- Build a habit of reflection and continuous improvement
+
+## 🚀 Quick Start
+
+**New to Captain's Log?** Check out [QUICKSTART.md](QUICKSTART.md) for a beginner-friendly guide.
+
+**Get started immediately:**
+```bash
+./scripts/quickstart.sh
+```
+
+This interactive menu will guide you through:
+- Creating your first daily log
+- Adding quick notes throughout the day
+- Creating weekly summaries
+- Managing people profiles
+- Starting the web viewer
+
+## 🛠️ Tech Stack
+
+- **Core**: Markdown files (plain text, portable, future-proof)
+- **Scripts**: Bash (cross-platform shell scripts)
+- **Web UI** (optional):
+  - **Frontend**: React 19 + TypeScript
+  - **Build Tool**: Vite 5
+  - **UI Library**: Mantine 8
+  - **Markdown Processing**: gray-matter, react-markdown
+  - **Search**: MiniSearch
+  - **Routing**: React Router 7
 
 ## Project Structure
 
@@ -19,13 +54,30 @@ captains-log/
 
 ## Getting Started
 
-### Quick Start
+### Quick Start - Interactive Menu
+```bash
+# Launch the interactive quick start menu
+./scripts/quickstart.sh
+```
+
+This will show you options to:
+1. Create/edit daily logs
+2. Add quick notes
+3. Create weekly summaries
+4. Manage people profiles
+5. View recent entries
+6. Start the web viewer
+
+### Quick Start - Direct Commands
 ```bash
 # Create today's daily log
 ./scripts/new_daily.sh
 
+# Add a quick note to today's log (interactive)
+./scripts/add_to_daily.sh
+
 # Create daily log for specific date
-./scripts/new_daily.sh 2025-11-18
+./scripts/new_daily.sh 2025-12-10
 
 # View recent entries
 ls -la daily/
@@ -33,10 +85,10 @@ ls -la weekly/
 ```
 
 ### Daily Workflow
-1. **Morning**: Run `./scripts/new_daily.sh` to create today's entry
-2. **Throughout day**: Update sections as work progresses
-3. **Evening**: Complete follow-up items and longer-term threads
-4. **End of week**: Create weekly summary using `templates/weekly-summary-template.md`
+1. **Morning**: Run `./scripts/quickstart.sh` or `./scripts/new_daily.sh` to create today's entry
+2. **Throughout day**: Use `./scripts/add_to_daily.sh` to quickly add notes, or keep the file open and update as you go
+3. **Evening**: Complete follow-up items and note longer-term threads
+4. **End of week**: Create weekly summary using the quickstart menu
 
 ## Entry Types
 
@@ -104,6 +156,31 @@ Individual relationship tracking:
 - **Relationship Building**: Personal interests and background
 - **Follow-Up Actions**: Short, medium, and long-term action items
 
+## Web Viewer
+
+Captain's Log includes a modern web interface for browsing your entries:
+
+### Starting the Web Viewer
+```bash
+# Easy way - use the quickstart menu
+./scripts/quickstart.sh
+# Then choose option 6
+
+# Or manually
+npm install              # First time only
+./scripts/sync_to_web.sh # Sync your markdown files
+npm run dev              # Start the server
+```
+
+Then open http://localhost:5175/ in your browser.
+
+### Web Viewer Features
+- **Dashboard**: Overview with recent entries and quick stats
+- **Calendar**: Date-based navigation of log entries
+- **Search**: Full-text search across all entries
+- **People**: Browse and manage people profiles
+- **Todo List**: Task tracking from markdown files
+
 ## Templates
 
 All templates are located in `templates/` and provide consistent structure:
@@ -116,11 +193,15 @@ All templates are located in `templates/` and provide consistent structure:
 - **`people-profile-template.md`**: Individual relationship tracking format
 
 To use a template:
-1. Copy from `templates/` to appropriate directory
-2. Rename with proper date/topic format
-3. Fill in sections as needed
+1. The scripts automatically use templates (recommended)
+2. Or manually: Copy from `templates/` to appropriate directory
+3. Rename with proper date/topic format
+4. Fill in sections as needed
 
 ## Scripts
+
+### `./scripts/quickstart.sh`
+Interactive menu for all common tasks - **recommended for beginners!**
 
 ### `./scripts/new_daily.sh`
 Automated daily log creation script.
@@ -131,14 +212,33 @@ Automated daily log creation script.
 ./scripts/new_daily.sh
 
 # Create entry for specific date
-./scripts/new_daily.sh 2025-11-18
+./scripts/new_daily.sh 2025-12-10
+```
+
+### `./scripts/add_to_daily.sh`
+Quickly add notes to today's log without opening an editor.
+
+**Usage:**
+```bash
+# Add to today's log
+./scripts/add_to_daily.sh
+
+# Add to a specific date's log
+./scripts/add_to_daily.sh 2025-12-10
 ```
 
 **Features:**
-- Automatically uses current date if none specified
-- Creates `daily/` directory if it doesn't exist
-- Won't overwrite existing files
-- Copies from daily template and confirms creation
+- Interactive prompts for different entry types
+- Automatically creates the daily log if it doesn't exist
+- Supports adding multiple entries in one session
+
+### `./scripts/sync_to_web.sh`
+Syncs markdown files to the web viewer.
+
+**Usage:**
+```bash
+./scripts/sync_to_web.sh
+```
 
 ## Git Workflow
 
@@ -146,12 +246,12 @@ Regular commits maintain historical context of decisions and thought processes:
 
 ```bash
 # Add and commit daily progress
-git add daily/2025-11-19.md
-git commit -m "Add daily log for 2025-11-19"
+git add daily/2025-12-14.md
+git commit -m "Add daily log for 2025-12-14"
 
 # Weekly summary commits
-git add weekly/2025-W47.md
-git commit -m "Add weekly summary W47"
+git add weekly/2025-W50.md
+git commit -m "Add weekly summary W50"
 
 # Bulk updates
 git add .
@@ -188,7 +288,10 @@ git push
 
 ### Creating Your First Entry
 ```bash
-# Create today's log
+# Easy way - interactive menu
+./scripts/quickstart.sh
+
+# Or direct command
 ./scripts/new_daily.sh
 
 # Edit in your preferred editor
@@ -197,9 +300,21 @@ vim daily/$(date +%F).md   # Vim
 nano daily/$(date +%F).md  # Nano
 ```
 
+### Adding Notes Throughout the Day
+```bash
+# Quick add without opening editor
+./scripts/add_to_daily.sh
+
+# Follow the interactive prompts
+```
+
 ### End of Week Summary
 ```bash
-# Copy template (macOS/Linux)
+# Use the quickstart menu
+./scripts/quickstart.sh
+# Choose option 3
+
+# Or manually
 cp templates/weekly-summary-template.md weekly/2025-W$(date +%U).md
 
 # Fill in retrospective details
@@ -221,7 +336,11 @@ git commit -m "Add topic note for architecture migration"
 
 ### Creating a People Profile
 ```bash
-# Copy template
+# Use the quickstart menu
+./scripts/quickstart.sh
+# Choose option 4
+
+# Or manually
 cp templates/people-profile-template.md people/jane-smith.md
 
 # Document working style and interaction patterns
@@ -230,6 +349,58 @@ git add people/jane-smith.md
 git commit -m "Add profile for Jane Smith"
 ```
 
+## 📝 Use Cases
+
+### For Students
+- Track daily coursework and assignment progress
+- Document research findings and experiments
+- Maintain notes on professors and courses
+- Reflect on internship experiences
+- Build a portfolio of learning
+
+### For Developers
+- Log daily development work and decisions
+- Track bug fixes and their context
+- Document architecture decisions
+- Maintain sprint retrospectives
+- Keep notes on code reviews and pair programming sessions
+
+### For Researchers
+- Daily lab notes and experiment tracking
+- Weekly research progress summaries
+- Collaboration notes with advisors and peers
+- Literature review tracking
+- Conference and paper planning
+
+### For Engineering Leaders
+- Track team progress and blockers
+- Document 1:1 conversations and coaching
+- Maintain decision logs with context
+- Weekly team retrospectives
+- People development tracking
+
+## 🤝 Contributing
+
+Contributions are welcome! This project is designed to be simple and focused. If you have ideas for improvements:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by the practice of engineering leadership journals
+- Built with modern web technologies for an enhanced user experience
+- Designed to be simple, portable, and future-proof
+
 ## Support
 
-For questions about using this system effectively or integrating with tools, see `CLAUDE.md` for AI assistant guidance and automation support.
+- For quick guidance, see `QUICKSTART.md` for a beginner-friendly guide
+- For AI assistant guidance and automation support, see `agents.md`
+- For issues or questions, refer to the troubleshooting section in `QUICKSTART.md`

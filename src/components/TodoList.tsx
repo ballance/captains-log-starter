@@ -68,33 +68,33 @@ export default function TodoList() {
   }
 
   const renderTodoItem = (todo: TodoItem) => (
-    <Card key={todo.id} shadow="xs" padding="md" radius="sm" withBorder>
-      <Group>
+    <Card key={todo.id} shadow="sm" p="lg" radius="md" mb="sm">
+      <Group align="center" gap="lg" wrap="nowrap">
         <Checkbox
           checked={todo.completed}
           readOnly
           color={todo.completed ? 'green' : 'blue'}
+          style={{ alignSelf: 'flex-start' }}
         />
-        <div style={{ flex: 1 }}>
-          <Text 
-            size="sm" 
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Text
+            size="sm"
             fw={500}
             td={todo.completed ? 'line-through' : undefined}
             c={todo.completed ? 'dimmed' : undefined}
           >
             {todo.content}
           </Text>
-          <Group gap="xs" mt={4}>
-            <Badge 
-              size="xs" 
-              variant="light" 
+          <Group gap="xs" mt={8} wrap="wrap">
+            <Badge
+              size="sm"
+              variant="light"
               color={getDateColor(todo.date)}
-              leftSection={<IconCalendar size={10} />}
+              leftSection={<IconCalendar size={12} />}
             >
               {getDateLabel(todo.date)}
             </Badge>
-            <Badge size="xs" variant="outline" color="gray">
-              <IconFileText size={10} style={{ marginRight: 4 }} />
+            <Badge size="sm" variant="dot" color="gray">
               {todo.source.split(' - ')[0]}
             </Badge>
           </Group>

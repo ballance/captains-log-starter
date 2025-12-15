@@ -20,23 +20,31 @@ export class DataCache {
     yearlyLogs: [],
     lastUpdated: 0
   }
-  
+
   private static refreshInterval: number | null = null
   private static readonly REFRESH_INTERVAL_MS = 60 * 1000 // 60 seconds
   private static isLoading = false
+  private static isDemoMode = false
+
+  static setDemoMode(enabled: boolean) {
+    if (this.isDemoMode !== enabled) {
+      this.isDemoMode = enabled
+      this.refreshCache().catch(console.error)
+    }
+  }
 
   static async initialize() {
     if (this.isLoading) return
-    
+
     this.isLoading = true
     try {
       await this.refreshCache()
-      
+
       // Set up periodic refresh
       if (this.refreshInterval) {
         window.clearInterval(this.refreshInterval)
       }
-      
+
       this.refreshInterval = window.setInterval(() => {
         this.refreshCache().catch(console.error)
       }, this.REFRESH_INTERVAL_MS)
@@ -114,16 +122,26 @@ export class DataCache {
   }
 
   private static async loadPeopleFromFiles(): Promise<Person[]> {
-    const knownFiles: string[] = [
-      // Add your people profile files here
-      // Example: 'firstname-lastname.md'
-    ]
+    const basePath = this.isDemoMode ? '/data/demo' : '/data'
+
+    const knownFiles: string[] = this.isDemoMode
+      ? [
+          'sarah-chen.md',
+          'alex-rodriguez.md',
+          'marcus-thompson.md',
+          'priya-patel.md',
+          'dr-kim-park.md'
+        ]
+      : [
+          // Add your people profile files here
+          // Example: 'firstname-lastname.md'
+        ]
 
     const people: Person[] = []
 
     for (const fileName of knownFiles) {
       try {
-        const filePath = `/data/people/${fileName}`
+        const filePath = `${basePath}/people/${fileName}`
         console.log(`Attempting to fetch: ${filePath}`)
         const response = await fetch(filePath)
         console.log(`Fetch response for ${fileName}:`, response.ok, response.status)
@@ -157,36 +175,59 @@ export class DataCache {
   }
 
   private static async loadDailyLogsFromFiles(): Promise<LogEntry[]> {
-    const dailyFiles: string[] = [
-      // Add your daily log files here
-      // Example: '2025-12-14.md'
-    ]
+    const basePath = this.isDemoMode ? '/data/demo' : '/data'
 
-    return this.loadLogEntries(dailyFiles, '/data/daily/', 'daily')
+    const dailyFiles: string[] = this.isDemoMode
+      ? [
+          '2025-12-14.md',
+          '2025-12-13.md',
+          '2025-12-12.md',
+          '2025-12-11.md',
+          '2025-12-10.md',
+          '2025-12-09.md'
+        ]
+      : [
+          // Add your daily log files here
+          // Example: '2025-12-14.md'
+        ]
+
+    return this.loadLogEntries(dailyFiles, `${basePath}/daily/`, 'daily')
   }
 
   private static async loadWeeklyLogsFromFiles(): Promise<LogEntry[]> {
-    const weeklyFiles: string[] = [
-      // Add your weekly summary files here
-      // Example: '2025-W50.md'
-    ]
-    return this.loadLogEntries(weeklyFiles, '/data/weekly/', 'weekly')
+    const basePath = this.isDemoMode ? '/data/demo' : '/data'
+
+    const weeklyFiles: string[] = this.isDemoMode
+      ? ['2025-W50.md']
+      : [
+          // Add your weekly summary files here
+          // Example: '2025-W50.md'
+        ]
+    return this.loadLogEntries(weeklyFiles, `${basePath}/weekly/`, 'weekly')
   }
 
   private static async loadMonthlyLogsFromFiles(): Promise<LogEntry[]> {
-    const monthlyFiles: string[] = [
-      // Add your monthly overview files here
-      // Example: '2025-12.md'
-    ]
-    return this.loadLogEntries(monthlyFiles, '/data/monthly/', 'monthly')
+    const basePath = this.isDemoMode ? '/data/demo' : '/data'
+
+    const monthlyFiles: string[] = this.isDemoMode
+      ? []
+      : [
+          // Add your monthly overview files here
+          // Example: '2025-12.md'
+        ]
+    return this.loadLogEntries(monthlyFiles, `${basePath}/monthly/`, 'monthly')
   }
 
   private static async loadYearlyLogsFromFiles(): Promise<LogEntry[]> {
-    const yearlyFiles: string[] = [
-      // Add your yearly retrospective files here
-      // Example: '2025.md'
-    ]
-    return this.loadLogEntries(yearlyFiles, '/data/yearly/', 'yearly')
+    const basePath = this.isDemoMode ? '/data/demo' : '/data'
+
+    const yearlyFiles: string[] = this.isDemoMode
+      ? []
+      : [
+          // Add your yearly retrospective files here
+          // Example: '2025.md'
+        ]
+    return this.loadLogEntries(yearlyFiles, `${basePath}/yearly/`, 'yearly')
   }
 
   private static async loadLogEntries(

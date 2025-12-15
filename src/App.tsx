@@ -1,4 +1,4 @@
-import { AppShell, NavLink, Group, Title, Burger } from '@mantine/core'
+import { AppShell, NavLink, Group, Title, Burger, Switch, Badge } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { IconCalendar, IconSearch, IconUsers, IconChecklist, IconHome } from '@tabler/icons-react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
@@ -11,21 +11,28 @@ import Search from './components/Search'
 import People from './components/People'
 import TodoList from './components/TodoList'
 import { DataCache } from './utils/dataCache'
+import { useDemoMode } from './contexts/DemoModeContext'
 
 function App() {
   const navigate = useNavigate()
   const location = useLocation()
   const [opened, { toggle }] = useDisclosure()
+  const { isDemoMode, toggleDemoMode } = useDemoMode()
 
   // Initialize data cache on app startup
   useEffect(() => {
     DataCache.initialize()
-    
+
     // Cleanup on unmount
     return () => {
       DataCache.cleanup()
     }
   }, [])
+
+  // Sync demo mode with DataCache
+  useEffect(() => {
+    DataCache.setDemoMode(isDemoMode)
+  }, [isDemoMode])
 
   const navItems = [
     { icon: IconHome, label: 'Dashboard', path: '/' },
@@ -46,9 +53,33 @@ function App() {
       padding="md"
     >
       <AppShell.Header>
-        <Group h="100%" px="md">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <Title order={2}>Captain's Log</Title>
+        <Group h="100%" px="md" justify="space-between">
+          <Group>
+            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+            <img
+              src="/images/picard-logo.jpg"
+              alt="Captain Picard"
+              style={{
+                height: '45px',
+                width: '45px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '2px solid #228be6'
+              }}
+            />
+            <Title order={2}>Captain's Log</Title>
+          </Group>
+          <Group gap="xs">
+            {isDemoMode && (
+              <Badge color="blue" variant="light">Demo Mode</Badge>
+            )}
+            <Switch
+              checked={isDemoMode}
+              onChange={toggleDemoMode}
+              label="Demo Mode"
+              size="md"
+            />
+          </Group>
         </Group>
       </AppShell.Header>
 

@@ -18,50 +18,66 @@ export function useTodos() {
       const lines = entry.content.split('\n')
       
       lines.forEach((line, index) => {
-        // Match various todo formats:
+        // Match specific todo formats only:
         // - [ ] Todo item
         // - [x] Completed todo
         // - TODO: Something
-        // - Follow ups Tomorrow:
-        const todoMatches = [
-          line.match(/^[\s-]*\[([ x])\]\s+(.+)$/), // Markdown checkbox format
-          line.match(/^[\s-]*TODO:\s*(.+)$/i),    // TODO: format
-          line.match(/^[\s-]*-\s+(.+)$/) && line.includes('Follow ups Tomorrow') ? null : line.match(/^[\s-]*-\s+(.+)$/), // List items under certain sections
-        ].filter(Boolean)
+        const checkboxMatch = line.match(/^[\s-]*\[([ xX])\]\s+(.+)$/)
+        const todoMatch = line.match(/^[\s-]*TODO:\s*(.+)$/i)
 
-        todoMatches.forEach(match => {
-          if (match) {
-            const isCompleted = match[1] === 'x' || line.toLowerCase().includes('completed') || line.toLowerCase().includes('done')
-            const content = match[2] || match[1]
-            
-            if (content && content.trim().length > 3) { // Filter out very short items
-              extractedTodos.push({
-                id: `${entry.id}-${index}`,
-                content: content.trim(),
-                completed: isCompleted,
-                date: entry.date,
-                source: entry.title
-              })
-            }
+        if (checkboxMatch) {
+          const isCompleted = checkboxMatch[1].toLowerCase() === 'x'
+          const content = checkboxMatch[2]
+
+          if (content && content.trim().length > 3) {
+            extractedTodos.push({
+              id: `${entry.id}-${index}`,
+              content: content.trim(),
+              completed: isCompleted,
+              date: entry.date,
+              source: entry.title
+            })
           }
-        })
+        } else if (todoMatch) {
+          const content = todoMatch[1]
+
+          if (content && content.trim().length > 3) {
+            extractedTodos.push({
+              id: `${entry.id}-todo-${index}`,
+              content: content.trim(),
+              completed: false,
+              date: entry.date,
+              source: entry.title
+            })
+          }
+        }
 
         // Also extract items from "Follow ups Tomorrow" sections
-        if (line.toLowerCase().includes('follow ups tomorrow') || line.toLowerCase().includes('follow up')) {
-          // Look for items in the next few lines
+        if (line.toLowerCase().includes('follow ups tomorrow')) {
+          // Look for checkbox items in the next few lines
           for (let i = index + 1; i < Math.min(index + 10, lines.length); i++) {
             const nextLine = lines[i]
-            const listMatch = nextLine.match(/^[\s-]*-\s+(.+)$/)
-            if (listMatch && nextLine.trim() && !nextLine.startsWith('#')) {
-              extractedTodos.push({
-                id: `${entry.id}-followup-${i}`,
-                content: listMatch[1].trim(),
-                completed: false,
-                date: entry.date,
-                source: `${entry.title} - Follow ups`
-              })
-            } else if (nextLine.startsWith('#') || nextLine.trim() === '') {
-              break // Stop at next section or empty line
+
+            // Stop at next section heading or empty line
+            if (nextLine.startsWith('#') || nextLine.trim() === '') {
+              break
+            }
+
+            // Only extract checkbox items from follow-up sections
+            const checkboxMatch = nextLine.match(/^[\s-]*\[([ xX])\]\s+(.+)$/)
+            if (checkboxMatch) {
+              const isCompleted = checkboxMatch[1].toLowerCase() === 'x'
+              const content = checkboxMatch[2]
+
+              if (content && content.trim().length > 3) {
+                extractedTodos.push({
+                  id: `${entry.id}-followup-${i}`,
+                  content: content.trim(),
+                  completed: isCompleted,
+                  date: entry.date,
+                  source: `${entry.title} - Follow ups`
+                })
+              }
             }
           }
         }
@@ -70,8 +86,11 @@ export function useTodos() {
 
     // Sort by date (newest first) and remove duplicates
     const uniqueTodos = extractedTodos
-      .filter((todo, index, self) => 
-        index === self.findIndex(t => t.content === todo.content && t.source === todo.source)
+      .filter((todo, index, self) =>
+        index === self.findIndex(t =>
+          t.content.toLowerCase() === todo.content.toLowerCase() &&
+          t.date.toDateString() === todo.date.toDateString()
+        )
       )
       .sort((a, b) => b.date.getTime() - a.date.getTime())
 

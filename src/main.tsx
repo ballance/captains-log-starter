@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core'
 import { BrowserRouter } from 'react-router-dom'
 import { Buffer } from 'buffer'
 import App from './App.tsx'
+import { DemoModeProvider } from './contexts/DemoModeContext'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
 import '@mantine/spotlight/styles.css'
@@ -15,7 +16,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MantineProvider defaultColorScheme="auto">
       <BrowserRouter>
-        <App />
+        <DemoModeProvider>
+          <App />
+        </DemoModeProvider>
       </BrowserRouter>
     </MantineProvider>
   </StrictMode>,

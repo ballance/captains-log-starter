@@ -179,7 +179,24 @@ Then open http://localhost:5175/ in your browser.
 - **Calendar**: Date-based navigation of log entries
 - **Search**: Full-text search across all entries
 - **People**: Browse and manage people profiles
-- **Todo List**: Task tracking from markdown files
+- **Todo Dashboard**: Automatically extracts and tracks todos from your log entries
+  - Parses markdown checkboxes (`- [ ]` and `- [x]`)
+  - Detects TODO: items in your notes
+  - Tracks items from "Follow ups Tomorrow" sections
+  - Shows completion rate and progress stats
+  - Filters by pending, completed, or all items
+- **Demo Mode**: Toggle to view sample data and explore features
+
+### Demo Mode
+
+The web viewer includes a demo mode that lets you explore features with sample data before creating your own entries:
+
+1. **Access Demo Mode**: Click the "Demo Mode" toggle in the top-right corner of the web interface
+2. **Sample Data**: Includes realistic daily logs, people profiles, and weekly summaries
+3. **Try Features**: Test the Todo Dashboard, search, and other features with populated data
+4. **Your Data**: Toggle demo mode off to return to your personal entries
+
+Demo data is located in `public/data/demo/` and is served alongside your real data.
 
 ## Templates
 

@@ -89,7 +89,9 @@ If you want to browse your entries in a nice web interface:
 
 4. **Open your browser** and go to `http://localhost:5175/`
 
-5. **When you're done**, press `Ctrl+C` in the Terminal to stop the web server
+5. **Try Demo Mode**: Click the "Demo Mode" toggle in the top-right to explore with sample data
+
+6. **When you're done**, press `Ctrl+C` in the Terminal to stop the web server
 
 ## Daily Workflow
 
@@ -137,6 +139,34 @@ This interactive script lets you quickly add:
 - Complete any follow-up items
 - Note what needs attention tomorrow
 - Save and close the file
+
+## Todo Dashboard (Web Viewer)
+
+The web viewer automatically extracts and tracks todos from your journal entries:
+
+### How It Works
+- Parses markdown checkboxes: `- [ ] Incomplete task` and `- [x] Completed task`
+- Detects `TODO:` items in your notes
+- Extracts items from "Follow ups Tomorrow" sections
+- Updates automatically when you refresh the page
+
+### Writing Todos in Your Journal
+```markdown
+## Follow ups Tomorrow
+- [ ] Review Sarah's PR for the calendar improvements
+- [ ] Schedule architecture discussion with backend team
+- [x] Send design doc to stakeholders
+
+## Notes
+- TODO: Debug the build pipeline issues
+- TODO: Update project timeline
+```
+
+### Viewing Your Todos
+1. Open the web viewer at `http://localhost:5175/`
+2. Click "Todo List" in the navigation
+3. Filter by: Pending, Completed, or All Items
+4. See completion rate and progress statistics
 
 ## Understanding the Journal Structure
 
@@ -286,9 +316,10 @@ chmod +x scripts/sync_to_web.sh
 Check the `daily/` folder - the file is named with today's date in YYYY-MM-DD format.
 
 ### Web viewer shows "No entries"
-1. Make sure you've run `./scripts/sync_to_web.sh`
-2. Check that your markdown files exist in the `daily/`, `weekly/`, etc. folders
-3. Refresh your browser
+1. **Try Demo Mode first**: Click the "Demo Mode" toggle in the top-right to see sample data
+2. Make sure you've run `./scripts/sync_to_web.sh`
+3. Check that your markdown files exist in the `daily/`, `weekly/`, etc. folders
+4. Refresh your browser
 
 ### npm command not found
 You need to install Node.js first. Visit [nodejs.org](https://nodejs.org/) to download and install it. The command-line journal works without this, but the web viewer requires it.
